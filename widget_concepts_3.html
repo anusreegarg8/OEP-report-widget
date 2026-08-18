@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Report Q&A Widget — Concept Mockups</title>
+<style>
+  :root{
+    --forest:#1b3a2f;
+    --forest-light:#2d5744;
+    --cream:#faf7f0;
+    --paper:#ffffff;
+    --ink:#20261f;
+    --muted:#6b7369;
+    --line:#e4ded0;
+    --amber:#c98a3a;
+    --amber-light:#f4e3c8;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif;
+    background:#eee9dd;
+    color:var(--ink);
+  }
+  .wrap{max-width:1040px;margin:0 auto;padding:32px 20px 80px;}
+  header.page-head{margin-bottom:24px;}
+  header.page-head h1{font-size:22px;margin:0 0 6px;color:var(--forest);}
+  header.page-head p{margin:0;color:var(--muted);font-size:14.5px;max-width:640px;line-height:1.5;}
+
+  .tabs{display:flex;gap:8px;margin:24px 0 20px;flex-wrap:wrap;}
+  .tab{
+    padding:10px 16px;border-radius:999px;border:1px solid var(--line);
+    background:var(--paper);cursor:pointer;font-size:13.5px;font-weight:600;color:var(--forest);
+    transition:all .15s ease;
+  }
+  .tab:hover{border-color:var(--forest-light);}
+  .tab.active{background:var(--forest);color:#fff;border-color:var(--forest);}
+
+  .concept{display:none;}
+  .concept.active{display:block;}
+
+  .blurb{background:var(--paper);border:1px solid var(--line);border-radius:12px;padding:16px 20px;margin-bottom:18px;}
+  .blurb h2{font-size:15px;margin:0 0 6px;color:var(--forest);}
+  .blurb p{margin:0;font-size:13.5px;line-height:1.55;color:var(--ink);}
+  .blurb .tradeoffs{display:flex;gap:24px;margin-top:12px;font-size:12.5px;flex-wrap:wrap;}
+  .tradeoffs div{flex:1;min-width:200px;}
+  .tradeoffs strong{display:block;color:var(--forest);margin-bottom:3px;}
+  .tradeoffs ul{margin:0;padding-left:16px;color:var(--muted);}
+  .tradeoffs li{margin-bottom:2px;}
+
+  /* mock browser frame */
+  .frame{
+    background:var(--paper);border:1px solid var(--line);border-radius:14px;overflow:hidden;
+    box-shadow:0 10px 30px rgba(27,58,47,0.08);
+  }
+  .frame-bar{
+    background:#f1ece0;padding:9px 14px;display:flex;align-items:center;gap:6px;border-bottom:1px solid var(--line);
+  }
+  .dot{width:9px;height:9px;border-radius:50%;background:#d8d0bd;}
+  .frame-url{
+    margin-left:10px;background:#fff;border:1px solid var(--line);border-radius:6px;padding:3px 10px;
+    font-size:11px;color:var(--muted);flex:1;
+  }
+
+  .site{position:relative;min-height:560px;background:linear-gradient(180deg,#fbf8f1 0%,#f5f0e4 100%);padding:36px 40px;}
+  .site .kicker{font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--amber);font-weight:700;margin-bottom:10px;}
+  .site h2{font-size:26px;color:var(--forest);margin:0 0 14px;line-height:1.25;max-width:520px;}
+  .site .lede{font-size:14px;color:var(--ink);max-width:520px;line-height:1.6;margin-bottom:18px;}
+  .site .cta{display:inline-flex;gap:8px;align-items:center;background:var(--forest);color:#fff;
+    padding:10px 18px;border-radius:8px;font-size:13px;font-weight:600;}
+  .site .meta{margin-top:22px;font-size:12px;color:var(--muted);}
+
+  /* --- Concept 1: floating bubble --- */
+  .bubble{
+    position:absolute;right:28px;bottom:26px;width:54px;height:54px;border-radius:50%;
+    background:var(--amber);display:flex;align-items:center;justify-content:center;color:#fff;
+    box-shadow:0 8px 18px rgba(201,138,58,.4);font-size:22px;
+  }
+  .chat-panel{
+    position:absolute;right:28px;bottom:92px;width:320px;background:#fff;border-radius:14px;
+    border:1px solid var(--line);box-shadow:0 16px 40px rgba(27,58,47,.18);overflow:hidden;
+  }
+  .chat-head{background:var(--forest);color:#fff;padding:12px 14px;font-size:13px;font-weight:700;}
+  .chat-head span{display:block;font-weight:400;font-size:11px;opacity:.8;margin-top:2px;}
+  .chat-body{padding:12px 14px;max-height:280px;overflow-y:auto;font-size:12.5px;line-height:1.5;}
+  .msg{margin-bottom:10px;padding:9px 11px;border-radius:10px;max-width:88%;}
+  .msg.user{background:var(--amber-light);margin-left:auto;color:#5a4522;}
+  .msg.bot{background:#f1ece0;color:var(--ink);}
+  .msg.bot .cite{display:block;margin-top:5px;font-size:10.5px;color:var(--forest-light);font-weight:600;}
+  .chips{display:flex;flex-wrap:wrap;gap:6px;padding:0 14px 12px;}
+  .chip{background:#fff;border:1px solid var(--line);border-radius:999px;padding:5px 10px;font-size:11px;color:var(--forest);}
+  .chat-input{display:flex;gap:6px;padding:10px;border-top:1px solid var(--line);}
+  .chat-input input{flex:1;border:1px solid var(--line);border-radius:8px;padding:8px 10px;font-size:12px;}
+  .chat-input button{background:var(--forest);color:#fff;border:none;border-radius:8px;padding:0 12px;font-size:12px;font-weight:600;}
+
+  /* --- Concept 2: inline panel --- */
+  .inline-panel{
+    margin-top:26px;max-width:560px;background:#fff;border:1px solid var(--line);
+    border-radius:14px;padding:18px 20px;box-shadow:0 6px 18px rgba(27,58,47,.06);
+  }
+  .inline-panel .ip-head{display:flex;align-items:center;gap:10px;margin-bottom:10px;}
+  .ip-icon{width:30px;height:30px;border-radius:8px;background:var(--amber-light);display:flex;align-items:center;justify-content:center;color:var(--amber);font-size:15px;}
+  .ip-head h3{margin:0;font-size:14px;color:var(--forest);}
+  .ip-head span{display:block;font-size:11px;color:var(--muted);}
+  .ip-chips{display:flex;flex-wrap:wrap;gap:7px;margin-bottom:12px;}
+  .ip-chips .chip{background:var(--cream);}
+  .ip-answer{background:var(--cream);border-radius:10px;padding:12px 14px;font-size:12.5px;line-height:1.55;color:var(--ink);}
+  .ip-answer .cite{display:block;margin-top:6px;font-size:10.5px;color:var(--forest-light);font-weight:600;}
+  .ip-inputrow{display:flex;gap:8px;margin-top:12px;}
+  .ip-inputrow input{flex:1;border:1px solid var(--line);border-radius:8px;padding:9px 12px;font-size:12.5px;}
+  .ip-inputrow button{background:var(--forest);color:#fff;border:none;border-radius:8px;padding:0 16px;font-size:12.5px;font-weight:600;}
+
+  /* --- Concept 3: sidebar companion --- */
+  .site.split{display:flex;gap:0;padding:0;}
+  .split-main{padding:36px 34px;flex:1;}
+  .split-side{
+    width:270px;background:#fff;border-left:1px solid var(--line);display:flex;flex-direction:column;
+  }
+  .side-toc{padding:16px 16px 10px;border-bottom:1px solid var(--line);}
+  .side-toc h4{margin:0 0 8px;font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);}
+  .side-toc ul{list-style:none;margin:0;padding:0;font-size:11.5px;}
+  .side-toc li{padding:4px 0;color:var(--forest-light);border-left:2px solid transparent;padding-left:8px;}
+  .side-toc li.current{color:var(--forest);font-weight:700;border-left-color:var(--amber);background:var(--amber-light);border-radius:4px;}
+  .side-chat{flex:1;display:flex;flex-direction:column;padding:12px 14px;}
+  .side-chat h4{margin:0 0 8px;font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);}
+
+  footer.note{max-width:640px;margin:26px auto 0;font-size:12px;color:var(--muted);line-height:1.6;text-align:center;}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="page-head">
+    <h1>“Ask the Report” widget — three directions to react to</h1>
+    <p>Mockups built from the actual draft — <em>Beyond the Funding Gap: A Global Assessment of the Loss of USAID's Climate and Environment Programming</em> (Aug 2026 draft, 164 pp). Sample answers below are illustrative, drawn from real report text, to show how grounded, cited responses would look.</p>
+  </header>
+
+  <div class="tabs">
+    <div class="tab active" data-t="c1">1 · Floating chat bubble</div>
+    <div class="tab" data-t="c2">2 · Inline "Ask This Report" panel</div>
+    <div class="tab" data-t="c3">3 · Sidebar companion</div>
+  </div>
+
+  <!-- CONCEPT 1 -->
+  <div class="concept active" id="c1">
+    <div class="blurb">
+      <h2>Floating chat bubble</h2>
+      <p>A small tab in the corner of the report page, the pattern people already recognize from support-chat widgets. Stays out of the way until someone wants it; expands into a compact Q&A panel with suggested starter questions.</p>
+      <div class="tradeoffs">
+        <div><strong>Best if</strong><ul><li>You want something unobtrusive</li><li>Report page also has other content</li><li>Fastest to embed (one script tag)</li></ul></div>
+        <div><strong>Watch for</strong><ul><li>Easy to miss on first visit</li><li>Small panel = shorter answers read best</li></ul></div>
+      </div>
+    </div>
+    <div class="frame">
+      <div class="frame-bar"><div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="frame-url">oneearthpartners.com/momentum-for-the-environment-initiative</div></div>
+      <div class="site">
+        <div class="kicker">Momentum for the Environment Initiative</div>
+        <h2>Beyond the Funding Gap: A Global Assessment of the Loss of USAID's Climate and Environment Programming</h2>
+        <p class="lede">A mixed-methods assessment — 72 interviews, 175 survey responses, five focus countries — documenting the collapse of USAID's climate and environment portfolio and what it will take to rebuild.</p>
+        <div class="cta">↓ Download the full report (PDF)</div>
+        <div class="meta">August 2026 draft · One Earth Partners</div>
+
+        <div class="chat-panel">
+          <div class="chat-head">Ask about this report<span>Grounded in the 164-page draft</span></div>
+          <div class="chat-body">
+            <div class="msg user">What happened to local organizations?</div>
+            <div class="msg bot">Grassroots organizations absorbed the brunt of the shock — forced to cut specialized staff, slash salaries, and abandon remote-region projects. In Vietnam, the sudden cancellations were so damaging that some organizations faced "criminal" narratives in the press.
+              <span class="cite">📄 Finding 5: Direct Harm to Local Organizations, p.67</span>
+            </div>
+          </div>
+          <div class="chips">
+            <div class="chip">10 core findings?</div>
+            <div class="chip">Recs for funders</div>
+          </div>
+          <div class="chat-input"><input placeholder="Ask a question…"><button>→</button></div>
+        </div>
+        <div class="bubble">💬</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CONCEPT 2 -->
+  <div class="concept" id="c2">
+    <div class="blurb">
+      <h2>Inline "Ask This Report" panel</h2>
+      <p>A dedicated card embedded directly in the page flow, right below the report summary or download button. More visible than a bubble — it signals "this report is interactive" the moment someone lands on the page — and gives more room for longer, well-formatted answers.</p>
+      <div class="tradeoffs">
+        <div><strong>Best if</strong><ul><li>This page's main job is the report</li><li>You want to visibly promote the tool</li><li>Answers may need more space (lists, quotes)</li></ul></div>
+        <div><strong>Watch for</strong><ul><li>Takes up permanent page real estate</li><li>Slightly more design work to match site styling</li></ul></div>
+      </div>
+    </div>
+    <div class="frame">
+      <div class="frame-bar"><div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="frame-url">oneearthpartners.com/momentum-for-the-environment-initiative</div></div>
+      <div class="site">
+        <div class="kicker">Momentum for the Environment Initiative</div>
+        <h2>Beyond the Funding Gap: A Global Assessment of the Loss of USAID's Climate and Environment Programming</h2>
+        <p class="lede">A mixed-methods assessment — 72 interviews, 175 survey responses, five focus countries — documenting the collapse of USAID's climate and environment portfolio and what it will take to rebuild.</p>
+        <div class="cta">↓ Download the full report (PDF)</div>
+
+        <div class="inline-panel">
+          <div class="ip-head">
+            <div class="ip-icon">💬</div>
+            <div><h3>Ask this report a question</h3><span>Answers are grounded in the full 164-page draft, with page citations</span></div>
+          </div>
+          <div class="ip-chips">
+            <div class="chip">What are the 10 core findings?</div>
+            <div class="chip">What do you recommend for funders?</div>
+            <div class="chip">What's the methodology?</div>
+          </div>
+          <div class="ip-answer">
+            <strong>What do you recommend for funders?</strong><br>
+            Three headline recommendations: (1) provide patient, unrestricted core funding to grassroots organizations with lighter reporting burdens; (2) fund public goods and catalytic "first-loss" blended finance where private markets won't go; (3) invest in shared data infrastructure and research to rebuild the institutional memory lost with USAID.
+            <span class="cite">📄 Recommendations for Funders, p.117</span>
+          </div>
+          <div class="ip-inputrow"><input placeholder="Ask your own question…"><button>Ask</button></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CONCEPT 3 -->
+  <div class="concept" id="c3">
+    <div class="blurb">
+      <h2>Sidebar companion (report + chat side by side)</h2>
+      <p>A persistent side panel that pairs a mini table of contents with the Q&A tool — good for a standalone "read/explore the report" page rather than the summary landing page. Lets someone jump to a section <em>or</em> ask a question, and highlights where in the report an answer came from.</p>
+      <div class="tradeoffs">
+        <div><strong>Best if</strong><ul><li>You build a dedicated report-reading page</li><li>You want browsing + Q&A in one place</li><li>Report has clear, citable sections (this one does — 10 findings)</li></ul></div>
+        <div><strong>Watch for</strong><ul><li>Most build effort of the three</li><li>Needs its own page layout, not just a widget on the existing page</li></ul></div>
+      </div>
+    </div>
+    <div class="frame">
+      <div class="frame-bar"><div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="frame-url">oneearthpartners.com/beyond-the-funding-gap</div></div>
+      <div class="site split">
+        <div class="split-main">
+          <div class="kicker">Finding 5 of 10</div>
+          <h2 style="font-size:20px;">Direct Harm to Local Organizations</h2>
+          <p class="lede">Local grassroots organizations — described by interviewees as the backbone of the sector — absorbed the full force of the financial shock, suffering massive workforce loss and a collapse in the scope and scale of their work…</p>
+          <p class="lede">To survive, project leaders reported firing specialized staff, cutting salaries, and abandoning environmental projects in remote regions they could no longer afford to reach…</p>
+        </div>
+        <div class="split-side">
+          <div class="side-toc">
+            <h4>In this report</h4>
+            <ul>
+              <li>Executive Summary</li>
+              <li>Part A: Programming Characteristics</li>
+              <li class="current">Part B: Ten Core Findings</li>
+              <li>Recommendations</li>
+              <li>Project Pipeline</li>
+              <li>Annexes</li>
+            </ul>
+          </div>
+          <div class="side-chat">
+            <h4>Ask about this report</h4>
+            <div class="msg bot" style="margin:0 0 10px;">Try: "Which finding covers donor coordination?" or "Summarize the bright spots."</div>
+            <div class="msg user">Any bright spots in the findings?</div>
+            <div class="msg bot">Yes — Finding 10 covers isolated bright spots: pockets where local leadership, diversified funding, or strong pre-existing coordination cushioned the shock.
+              <span class="cite">📄 Finding 10, p.105</span>
+            </div>
+            <div style="flex:1;"></div>
+            <div class="chat-input" style="border-top:none;padding:0;margin-top:8px;"><input placeholder="Ask a question…"><button>→</button></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <footer class="note">These are visual mockups to help pick a direction — not yet wired to a live AI backend. Once you pick one (or a mix), the next step is choosing a no-code Q&A tool (e.g. Chatbase, CustomGPT.ai, DocsBot.ai, Chatling) to train on the final report, generating the real embed code, and adding it to the Squarespace page via a Code Block or Code Injection.</footer>
+</div>
+
+<script>
+  document.querySelectorAll('.tab').forEach(tab=>{
+    tab.addEventListener('click',()=>{
+      document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+      document.querySelectorAll('.concept').forEach(c=>c.classList.remove('active'));
+      tab.classList.add('active');
+      document.getElementById(tab.dataset.t).classList.add('active');
+    });
+  });
+</script>
+</body>
+</html>
